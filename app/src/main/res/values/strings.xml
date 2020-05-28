@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FirstKotlin</string>
+    <string name="zhang_jian">Zhang Jian</string>
+    <string name="roll">Roll</string>
+</resources>
