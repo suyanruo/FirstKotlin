@@ -1,26 +1,34 @@
-package com.example.firstkotlin
+package com.example.firstkotlin.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
-import com.example.firstkotlin.databinding.ActivityMainBinding
+import com.example.firstkotlin.R
+import com.example.firstkotlin.databinding.ActivityRollBinding
+import com.example.firstkotlin.util.maxCustomize
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class RollActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityRollBinding
     private lateinit var ivDice: ImageView
     private lateinit var btnRoll: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 视图绑定 ref：https://developer.android.com/topic/libraries/view-binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityRollBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ivDice = binding.ivDice
         btnRoll = binding.btnRoll
         btnRoll.setOnClickListener {
             rollNumber()
         }
+
+        // 通过"import kotlinx.android.synthetic.main.布局文件名称.*"导入布局文件同样可以实现布局文件中控件的使用
+        btn_roll.text = "helloWorld"
     }
 
     private fun rollNumber() {

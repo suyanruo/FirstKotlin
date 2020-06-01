@@ -2,4 +2,10 @@
     <string name="app_name">FirstKotlin</string>
     <string name="zhang_jian">Zhang Jian</string>
     <string name="roll">Roll</string>
+    <string name="data_bind">DataBind</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="test">test</string>
+    <string name="recyclerview">RecyclerView</string>
 </resources>
