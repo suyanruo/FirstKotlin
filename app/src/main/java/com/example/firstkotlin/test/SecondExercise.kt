@@ -7,7 +7,7 @@ import org.jetbrains.anko.toast
  * Created on 2020/5/31.
  * 继承自父类的子类，原有的输入参数不必加var或val，新增的参数才需要加
  */
-class SecondExercise(context: Context, name: String, var sex: String):KotlinExercise(context, name) {
+class SecondExercise(context: Context, name: String, var sex: String): KotlinExercise(context, name) {
 
     override fun test() {
     }

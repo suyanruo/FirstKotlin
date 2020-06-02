@@ -15,7 +15,7 @@ class PersonFragment: BaseFragment() {
     override fun init(view: View) {
     }
 
-    companion object PersonFragmentCp {
+    companion object {
         fun newInstance(): PersonFragment {
             return PersonFragment()
         }

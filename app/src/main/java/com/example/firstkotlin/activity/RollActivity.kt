@@ -1,11 +1,14 @@
 package com.example.firstkotlin.activity
 
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import com.example.firstkotlin.R
 import com.example.firstkotlin.databinding.ActivityRollBinding
+import com.example.firstkotlin.receiver.TimeReceiver
 import kotlinx.android.synthetic.main.activity_roll.*
 import java.util.*
 
@@ -13,6 +16,7 @@ class RollActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRollBinding
     private lateinit var ivDice: ImageView
     private lateinit var btnRoll: Button
+    private var timeReceiver: TimeReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,5 +45,17 @@ class RollActivity : AppCompatActivity() {
             else -> R.drawable.dice_6
         }
         ivDice.setImageResource(imageResource)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        timeReceiver = TimeReceiver()
+        val filter = IntentFilter(Intent.ACTION_TIME_TICK)
+        registerReceiver(timeReceiver, filter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(timeReceiver)
     }
 }

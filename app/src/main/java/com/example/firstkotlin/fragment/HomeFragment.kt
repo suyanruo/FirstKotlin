@@ -47,7 +47,7 @@ class HomeFragment: BaseFragment() {
         }
     }
 
-    companion object HomeFragmentCp {
+    companion object {
         fun newInstance(): HomeFragment {
             return HomeFragment()
         }
