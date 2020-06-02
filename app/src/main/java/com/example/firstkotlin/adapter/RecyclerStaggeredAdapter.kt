@@ -1,4 +1,4 @@
-package com.example.firstkotlin.view
+package com.example.firstkotlin.adapter
 
 import android.content.Context
 import android.view.View
@@ -8,16 +8,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstkotlin.R
-import com.example.firstkotlin.modle.RecyclerInfo
+import com.example.firstkotlin.modle.LifeItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_recycler_grid.*
-import kotlinx.android.synthetic.main.item_recycler_grid.view.*
 
 /**
  * Created on 2020/6/1.
  *
  */
-class RecyclerStaggeredAdapter(context: Context, private val infos: MutableList<RecyclerInfo>):
+class RecyclerStaggeredAdapter(context: Context, private val infos: MutableList<LifeItem>):
     RecyclerBaseAdapter<RecyclerView.ViewHolder>(context) {
 
     override fun getItemCount(): Int = infos.size
@@ -47,7 +46,7 @@ class RecyclerStaggeredAdapter(context: Context, private val infos: MutableList<
 
     class ItemHolderCon(override val containerView: View):
         RecyclerView.ViewHolder(containerView), LayoutContainer {
-        fun bind(item: RecyclerInfo) {
+        fun bind(item: LifeItem) {
             iv_pic.setImageResource(item.picId)
             tv_title.text = item.title
         }

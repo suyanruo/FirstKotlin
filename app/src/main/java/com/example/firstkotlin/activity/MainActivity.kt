@@ -1,43 +1,105 @@
 package com.example.firstkotlin.activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.util.SparseArray
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.example.firstkotlin.R
 import com.example.firstkotlin.databinding.ActivityMainBinding
+import com.example.firstkotlin.fragment.HomeFragment
+import com.example.firstkotlin.fragment.MallFragment
+import com.example.firstkotlin.fragment.PersonFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.startActivity
 
+/**
+ * @author zhangjian
+ * on 2020-6-2
+ *
+ * ViewPager + Fragment : https://juejin.im/post/5de4e4356fb9a071b77c896a
+ */
 class MainActivity : AppCompatActivity() {
+    private val HOME_FRAGMENT_INDEX = 0
+    private val MALL_FRAGMENT_INDEX = 1
+    private val PERSON_FRAGMENT_INDEX = 2
     private lateinit var binding: ActivityMainBinding
-    private lateinit var btnRoll: Button
-    private lateinit var btnDataBind: Button
-    private lateinit var btnTest: Button
+    private var fragmentList: SparseArray<Fragment> = SparseArray(3)
+    private var homeFragment: HomeFragment? = null
+    private var mallFragment: MallFragment? = null
+    private var personFragment: PersonFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         /*
          * 视图绑定 ref：https://developer.android.com/topic/libraries/view-binding
          */
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+//        binding = ActivityMainBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
 
-        btnRoll = binding.btnRoll
-        btnDataBind = binding.btnDataBind
-        btnTest = binding.btnTest
+        initFragment()
 
-        btnRoll.setOnClickListener {
-            startActivity(Intent(this@MainActivity, RollActivity::class.java))
+        val fragmentAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+            override fun getItem(position: Int): Fragment = fragmentList.get(position)
+
+            override fun getCount(): Int = fragmentList.size()
         }
-        btnDataBind.setOnClickListener {
-            startActivity(Intent(this@MainActivity, DataBindActivity::class.java))
+        vp_main.scrollable = false
+        vp_main.adapter = fragmentAdapter
+        vp_main.currentItem = 0
+        vp_main.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {}
+
+            override fun onPageSelected(position: Int) {
+                vp_main.currentItem = position
+                bnv_main.menu.getItem(position).isChecked = true
+            }
+
+        })
+        // 去除背景底色
+        bnv_main.itemIconTintList = null
+        bnv_main.setOnNavigationItemSelectedListener {
+            item -> switchMenu(item)
+            true
         }
-        btnTest.setOnClickListener {
-            startActivity(Intent(this@MainActivity, TestActivity::class.java))
-        }
-        btn_recycler.setOnClickListener {
-            startActivity<RecyclerViewActivity>()
-        }
+
+
     }
 
+    private fun initFragment() {
+        if (homeFragment == null) {
+            homeFragment = HomeFragment.newInstance()
+        }
+        if (mallFragment == null) {
+            mallFragment = MallFragment.newInstance()
+        }
+        if (personFragment == null) {
+            personFragment = PersonFragment.newInstance()
+        }
+
+        fragmentList.clear()
+        fragmentList.put(HOME_FRAGMENT_INDEX, homeFragment)
+        fragmentList.put(MALL_FRAGMENT_INDEX, mallFragment)
+        fragmentList.put(PERSON_FRAGMENT_INDEX, personFragment)
+
+    }
+
+    /**
+     * 导航栏切换方法
+     */
+    private fun switchMenu(item: MenuItem) {
+        when (item.itemId) {
+            R.id.navigation_home -> vp_main.currentItem = 0
+            R.id.navigation_mall -> vp_main.currentItem = 1
+            else -> vp_main.currentItem = 2
+        }
+    }
 }

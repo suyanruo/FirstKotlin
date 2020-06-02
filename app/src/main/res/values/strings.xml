@@ -4,8 +4,12 @@
     <string name="roll">Roll</string>
     <string name="data_bind">DataBind</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="test">test</string>
     <string name="recyclerview">RecyclerView</string>
+    <string name="material_design">Material Design</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="home">首页</string>
 </resources>

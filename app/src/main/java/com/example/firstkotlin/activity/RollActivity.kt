@@ -6,8 +6,7 @@ import android.widget.Button
 import android.widget.ImageView
 import com.example.firstkotlin.R
 import com.example.firstkotlin.databinding.ActivityRollBinding
-import com.example.firstkotlin.util.maxCustomize
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_roll.*
 import java.util.*
 
 class RollActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.example.firstkotlin.view
+package com.example.firstkotlin.adapter
 
 import android.content.Context
 import android.view.View

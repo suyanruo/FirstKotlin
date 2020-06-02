@@ -19,7 +19,9 @@
         <activity android:name=".activity.DataBindActivity" />
         <activity android:name=".activity.RollActivity" />
         <activity android:name=".activity.TestActivity" />
-        <activity android:name=".activity.RecyclerViewActivity" />
+        <activity
+            android:name=".activity.MaterialViewActivity"
+            android:theme="@style/AppThemeWithoutActionBar" />
     </application>
 
 </manifest>
