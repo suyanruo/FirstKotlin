@@ -23,7 +23,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/btn_data_bind"
-        android:text="@string/recyclerview"/>
+        android:text="@string/material_design"/>
+
+    <Button
+        android:id="@+id/btn_storage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_roll"
+        android:text="@string/storage"/>
 
 
     <Button

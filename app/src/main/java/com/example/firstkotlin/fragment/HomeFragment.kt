@@ -1,18 +1,13 @@
 package com.example.firstkotlin.fragment
 
 import android.content.Intent
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.Fragment
 import com.example.firstkotlin.R
-import com.example.firstkotlin.activity.DataBindActivity
-import com.example.firstkotlin.activity.MaterialViewActivity
-import com.example.firstkotlin.activity.RollActivity
-import com.example.firstkotlin.activity.TestActivity
+import com.example.firstkotlin.activity.*
 import com.example.firstkotlin.base.BaseFragment
+import org.jetbrains.anko.clearTop
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.startActivity
 
 /**
@@ -23,6 +18,7 @@ class HomeFragment: BaseFragment() {
     private lateinit var btnRoll: Button
     private lateinit var btnDataBind: Button
     private lateinit var btnMaterial: Button
+    private lateinit var btnStorage: Button
     private lateinit var btnTest: Button
 
     override fun getLayoutId(): Int = R.layout.fragment_home
@@ -32,6 +28,7 @@ class HomeFragment: BaseFragment() {
         btnDataBind = view.findViewById(R.id.btn_data_bind)
         btnTest = view.findViewById(R.id.btn_test)
         btnMaterial = view.findViewById(R.id.btn_material)
+        btnStorage = view.findViewById(R.id.btn_storage)
 
         btnRoll.setOnClickListener {
             startActivity(Intent(activity, RollActivity::class.java))
@@ -44,6 +41,9 @@ class HomeFragment: BaseFragment() {
         }
         btnMaterial.setOnClickListener {
             activity?.startActivity<MaterialViewActivity>()
+        }
+        btnStorage.setOnClickListener {
+            startActivity(activity!!.intentFor<StorageActivity>().clearTop())
         }
     }
 
