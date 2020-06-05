@@ -1,13 +1,10 @@
 package com.example.firstkotlin.activity
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.firstkotlin.KotApplication
 import com.example.firstkotlin.R
 import com.example.firstkotlin.util.FileUtil
 import kotlinx.android.synthetic.main.activity_storage.*
-import org.jetbrains.anko.toast
 import java.io.File
 
 class StorageActivity : AppCompatActivity() {
@@ -53,8 +50,6 @@ class StorageActivity : AppCompatActivity() {
         super.onPause()
         FileUtil.deleteFile(this, fileDir)
     }
-
-
 
     private fun searchFile() {
         var fileNames = mutableListOf<String>()

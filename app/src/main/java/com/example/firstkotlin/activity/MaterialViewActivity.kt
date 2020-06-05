@@ -1,41 +1,59 @@
 package com.example.firstkotlin.activity
 
+import android.app.ProgressDialog
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
+import android.os.Handler
+import android.os.Message
+import android.view.*
 import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.firstkotlin.R
-import com.example.firstkotlin.modle.LifeItem
 import com.example.firstkotlin.adapter.RecyclerCommonAdapter
+import com.example.firstkotlin.modle.LifeItem
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_material_view.*
 import kotlinx.android.synthetic.main.life_pay.*
 import kotlinx.android.synthetic.main.toolbar_collapse.*
 import kotlinx.android.synthetic.main.toolbar_expand.*
-import org.jetbrains.anko.px2dip
+import org.jetbrains.anko.*
+import kotlin.math.abs
+import kotlinx.android.synthetic.main.toolbar_expand.iv_plus as iv_plus1
+
 
 /**
  * ref: https://github.com/aqi00/kotlin
  */
 class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
     private var mMaskColor: Int = 0
+    private lateinit var popupWindow: PopupWindow
+    private lateinit var progressDialog: ProgressDialog
+    private var prog: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_material_view)
 
-        setSupportActionBar(toolbar)
+        initViews()
+    }
 
+    private fun initViews() {
+        initToolBar()
+        initPopupWindow()
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
         //第一种方式：使用采取了LayoutContainer的适配器
         //rv_content.adapter = RecyclerLifeAdapter(this, LifeItem.default)
         //第二种方式：使用把三类可变要素抽象出来的适配器
         rv_content.layoutManager = GridLayoutManager(this, 4)
-        var list = makeArrayList()
         val adapter = RecyclerCommonAdapter(
             this,
             R.layout.item_recycler_grid, LifeItem.default
@@ -47,14 +65,88 @@ class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         }
         rv_content.adapter = adapter
         rv_content.itemAnimator = DefaultItemAnimator()
+    }
+
+    private fun initToolBar() {
+        setSupportActionBar(toolbar)
 
         mMaskColor = ContextCompat.getColor(this, R.color.blue_black)
         //给控件abl_bar注册一个位置偏移的监听器
         app_bar.addOnOffsetChangedListener(this)
+
+        iv_plus.setOnClickListener{
+            popupWindow.contentView.measure(0, 0)
+            popupWindow.showAsDropDown(iv_plus,
+                (-(popupWindow.contentView.measuredWidth) * 1.5).toInt(),
+                iv_plus.height)
+            val lp: WindowManager.LayoutParams = window.attributes
+            lp.alpha = 0.7f
+            window.attributes = lp
+        }
+    }
+
+    /**
+     * PopupWindow: https://my.oschina.net/JiangTun/blog/2998576
+     */
+    private fun initPopupWindow() {
+        val contentView = LayoutInflater.from(this).inflate(R.layout.layout_menu_item, null)
+        popupWindow = PopupWindow(contentView, dip(150), ViewGroup.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.setBackgroundDrawable(ColorDrawable())
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        popupWindow.setOnDismissListener {
+            val lp: WindowManager.LayoutParams = window.attributes
+            lp.alpha = 1f
+            window.attributes = lp
+        }
+        val shopMenu = contentView.findViewById<TextView>(R.id.tv_shop)
+        val clearMenu = contentView.findViewById<TextView>(R.id.tv_clear)
+        shopMenu.setOnClickListener{
+            startActivity(intentFor<StorageActivity>().clearTop())
+        }
+        clearMenu.setOnClickListener {
+            popupWindow.dismiss()
+            showProgressDialog()
+        }
+    }
+
+    /**
+     * 水平进度条loading，需要设置进度
+     */
+    private fun showProgressDialog() {
+        progressDialog = progressDialog("Loading...", "Wait Please")
+        progressDialog.show()
+        // 多线程方式一：使用Thread + Handler
+//            Thread {
+//                prog = 0
+//                while (prog < 100) {
+//                    prog += 10
+//                    handler.sendEmptyMessage(1)
+//                    Thread.sleep(1000)
+//                }
+//                handler.sendEmptyMessage(2)
+//            }.start()
+        // 多线程方式二：使用doAsync + uiThread
+        doAsync {
+            for (pro in 0..10) {
+                uiThread { refreshProgress(pro * 10) }
+                Thread.sleep(1000)
+            }
+            uiThread { finishRefresh() }
+        }
+
+    }
+
+    /**
+     * 圆形loading
+     */
+    private fun showCircleProgressDialog() {
+            val dialog = indeterminateProgressDialog("正在努力加载页面", "请稍等")
+            dialog.show()
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-        val offset = Math.abs(verticalOffset)
+        val offset = abs(verticalOffset)
         val total = appBarLayout.totalScrollRange
         val alphaIn = (px2dip(offset) * 2).toInt()
         val alphaOut = if (200 - alphaIn < 0) 0 else 200 - alphaIn
@@ -89,15 +181,20 @@ class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
 //        }
 //    }
 
-    private fun makeArrayList(): List<LifeItem> {
-        return arrayOf(
-            LifeItem("1", R.drawable.dice_1),
-            LifeItem("2", R.drawable.dice_2),
-            LifeItem("3", R.drawable.dice_3),
-            LifeItem("4", R.drawable.dice_4),
-            LifeItem("5", R.drawable.dice_5),
-            LifeItem("6", R.drawable.dice_6),
-            LifeItem("7", R.drawable.dice_4),
-            LifeItem("8", R.drawable.dice_4)).toList()
+    private val handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                1 -> refreshProgress(prog)
+                2 -> finishRefresh()
+            }
+        }
+    }
+
+    private fun refreshProgress(pro: Int) {
+        progressDialog.progress = pro
+    }
+
+    private fun finishRefresh() {
+        progressDialog.dismiss()
     }
 }

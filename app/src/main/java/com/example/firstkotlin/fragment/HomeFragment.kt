@@ -43,7 +43,7 @@ class HomeFragment: BaseFragment() {
             activity?.startActivity<MaterialViewActivity>()
         }
         btnStorage.setOnClickListener {
-            startActivity(activity!!.intentFor<StorageActivity>().clearTop())
+            startActivity(activity!!.intentFor<StorageActivity>())
         }
     }
 

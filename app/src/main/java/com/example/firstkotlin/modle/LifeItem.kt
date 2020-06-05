@@ -8,9 +8,17 @@ data class LifeItem(var title: String, var picId: Int) {
             get() {
                 val itemArray = mutableListOf<LifeItem>()
                 for (i in 0..39) {
-                    itemArray.add(LifeItem("转账", R.mipmap.small_charge))
+                    itemArray.add(LifeItem("功能$i", R.mipmap.small_charge))
                 }
                 return itemArray
             }
+
+        fun getLifeList(size: Int): MutableList<LifeItem> {
+            val itemArray = mutableListOf<LifeItem>()
+            for (i in 0..size) {
+                itemArray.add(LifeItem("功能$i", R.mipmap.small_charge))
+            }
+            return itemArray
+        }
     }
 }
