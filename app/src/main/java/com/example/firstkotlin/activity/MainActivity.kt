@@ -32,12 +32,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+//        setContentView(R.layout.activity_main)
         /*
          * 视图绑定 ref：https://developer.android.com/topic/libraries/view-binding
          */
-//        binding = ActivityMainBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initFragment()
 

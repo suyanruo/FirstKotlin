@@ -1,4 +1,4 @@
-package com.example.firstkotlin.modle
+package com.example.firstkotlin.model
 
 import com.example.firstkotlin.R
 

@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto" >
 
     <data>
-        <variable
-            name="user"
-            type="com.example.firstkotlin.viewModel.User" />
+        <import type="android.util.SparseArray" />
+        <import type="com.example.firstkotlin.util.BindingAdapters" />
+        <variable name="user" type="com.example.firstkotlin.model.User" />
+        <variable name="obUser" type="com.example.firstkotlin.model.ObservableUser" />
+        <variable name="person" type="com.example.firstkotlin.model.Person" />
+        <variable name="index" type="int" />
+        <variable name="sparse" type="SparseArray&lt;String>" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,17 +17,54 @@
         android:orientation="vertical"
         android:gravity="center_horizontal" >
 
-        <TextView android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:text="@{user.firstName}"/>
 
-        <TextView android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{user.lastName}"/>
+            android:text="@{user.lastName ?? user.firstName}"/>
 
-        <TextView android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{user.firstName ?? user.lastName}"/>
+            android:text="@{obUser.firstName}"/>
+
+        <EditText
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="@={obUser.firstName}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{sparse[index]}"/>
+
+        <TextView
+            android:id="@+id/tv_show_person"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{person.name}"/>
+
+        <EditText
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="@={person.name}"/>
+
+        <!--通过include的bind:<变量名>值来传递. 而且两者必须有同一个变量-->
+        <include layout="@layout/layout_data_bind"
+            bind:person="@{person}" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:imageUrl="@{person.imageUrl}"/>
     </LinearLayout>
 </layout>

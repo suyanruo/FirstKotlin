@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.firstkotlin.R
 import com.example.firstkotlin.adapter.RecyclerCommonAdapter
-import com.example.firstkotlin.modle.LifeItem
+import com.example.firstkotlin.model.LifeItem
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_material_view.*
 import kotlinx.android.synthetic.main.life_pay.*
@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.toolbar_collapse.*
 import kotlinx.android.synthetic.main.toolbar_expand.*
 import org.jetbrains.anko.*
 import kotlin.math.abs
-import kotlinx.android.synthetic.main.toolbar_expand.iv_plus as iv_plus1
 
 
 /**
@@ -74,11 +73,21 @@ class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         //给控件abl_bar注册一个位置偏移的监听器
         app_bar.addOnOffsetChangedListener(this)
 
-        iv_plus.setOnClickListener{
+        iv_plus_ex.setOnClickListener{
             popupWindow.contentView.measure(0, 0)
-            popupWindow.showAsDropDown(iv_plus,
+            popupWindow.showAsDropDown(iv_plus_ex,
                 (-(popupWindow.contentView.measuredWidth) * 1.5).toInt(),
-                iv_plus.height)
+                iv_plus_ex.height)
+            val lp: WindowManager.LayoutParams = window.attributes
+            lp.alpha = 0.7f
+            window.attributes = lp
+        }
+
+        iv_plus_co.setOnClickListener{
+            popupWindow.contentView.measure(0, 0)
+            popupWindow.showAsDropDown(iv_plus_co,
+                (-(popupWindow.contentView.measuredWidth) * 1.5).toInt(),
+                iv_plus_co.height)
             val lp: WindowManager.LayoutParams = window.attributes
             lp.alpha = 0.7f
             window.attributes = lp

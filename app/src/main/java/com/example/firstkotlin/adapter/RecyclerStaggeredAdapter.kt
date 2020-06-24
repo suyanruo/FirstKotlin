@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstkotlin.R
-import com.example.firstkotlin.modle.LifeItem
+import com.example.firstkotlin.model.LifeItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_recycler_grid.*
 

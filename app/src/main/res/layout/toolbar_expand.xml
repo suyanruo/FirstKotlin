@@ -36,7 +36,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/iv_plus"
+        android:id="@+id/iv_plus_ex"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentRight="true"

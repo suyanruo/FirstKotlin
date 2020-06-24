@@ -1,44 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-    <Button
-        android:id="@+id/btn_roll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/roll"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btn_data_bind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/btn_roll"
-        android:text="@string/data_bind"/>
+        <Button
+            android:id="@+id/btn_roll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/roll"/>
 
-    <Button
-        android:id="@+id/btn_material"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/btn_data_bind"
-        android:text="@string/material_design"/>
+        <Button
+            android:id="@+id/btn_data_bind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/btn_roll"
+            android:text="@string/data_bind"/>
 
-    <Button
-        android:id="@+id/btn_storage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_roll"
-        android:text="@string/storage"/>
+        <Button
+            android:id="@+id/btn_material"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/btn_data_bind"
+            android:text="@string/material_design"/>
+
+        <Button
+            android:id="@+id/btn_storage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_roll"
+            android:text="@string/storage"/>
+
+        <Button
+            android:id="@+id/btn_live_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_roll"
+            android:layout_toRightOf="@id/btn_storage"
+            android:text="@string/live_data"/>
+
+        <Button
+            android:id="@+id/btn_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:text="@string/test"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scrollbars="none"
+            android:overScrollMode="never" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="通过安卓scheme 调起whatsapp
+
+实现此手机号有没有在whatsapp注册的检测
+
+需要在安卓中写入如下代码，
+
+Uri uri = Uri.parse(whatsapp://send?phone=8618800008888);
+        startActivity(new Intent(Intent.ACTION_VIEW,uri));
+        检测手机号需要带上国家区号，86是中国区号，后面紧跟手机号码
+
+        运行程序会调起whatsapp，
+
+        如果此手机号8618800008888注册过whatsapp的话，
+
+        会直接进入这个号码的聊天页面,。
+
+        有两种状态，一种直接进入聊天页面，一种说此手机号没有注册。
+
+        通过状态可以捕捉到此手机号是否注册过whatsapp
+
+        我们可以通过安卓界面渲染拿到手机号状态，也可以通过
+
+        写简单xposed模块拿到状态，或者抓包。
+
+         
+
+        通过scheme只是其中较为简单的一种判断方式，
+
+        还有更高效的方式，就是通过通讯录的方式。
+
+        后续更新。
+
+        欢迎进(Q)群，帮你解决问题：
+
+        ————————————————
+        版权声明：本文为CSDN博主「我不喜欢这个世界」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+        原文链接：https://blog.csdn.net/m0_38124502/article/details/83376846"/>
+    </LinearLayout>
 
 
-    <Button
-        android:id="@+id/btn_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:text="@string/test"/>
-
-</RelativeLayout>
+</androidx.core.widget.NestedScrollView>
