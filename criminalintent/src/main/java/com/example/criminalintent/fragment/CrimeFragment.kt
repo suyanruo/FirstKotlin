@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.criminalintent.R
+import com.example.criminalintent.formatDate
 import com.example.criminalintent.model.Crime
 
 class CrimeFragment : Fragment() {
@@ -33,7 +34,7 @@ class CrimeFragment : Fragment() {
         cbSolved = view.findViewById(R.id.cb_solved)
 
         btnDate.apply {
-            text = crime.date.toString()
+            text = formatDate(crime.date)
             isEnabled = false
         }
         return view
