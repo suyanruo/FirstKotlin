@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.firstkotlin.R
 import com.example.firstkotlin.databinding.ActivityLiveDataBinding
 import com.example.firstkotlin.viewModel.NameViewModel
@@ -23,7 +23,7 @@ class LiveDataActivity : AppCompatActivity() {
         tvName = binding.tvName
         btnSetData = binding.btnSetLiveData
 
-        model = ViewModelProviders.of(this).get(NameViewModel::class.java)
+        model = ViewModelProvider(this).get(NameViewModel::class.java)
 
         val nameObserver = Observer<String> {
             newName -> tvName.text = newName
