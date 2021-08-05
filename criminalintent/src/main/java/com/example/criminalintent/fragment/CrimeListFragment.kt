@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,9 +39,21 @@ class CrimeListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_crime_list, container, false)
         rvCrimeList = view.findViewById(R.id.rv_crime_list)
         rvCrimeList.layoutManager = LinearLayoutManager(context)
-        crimeAdapter = CrimeAdapter(context, crimeListViewModel.crimes)
-        rvCrimeList.adapter = crimeAdapter
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        crimeListViewModel.crimeListLiveData.observe(
+            viewLifecycleOwner,
+            Observer { crimes ->
+                crimes?.let { if (crimeAdapter != null && crimes == crimeAdapter?.crimeList) {
+                    crimeAdapter?.notifyDataSetChanged()
+                } else {
+                    crimeAdapter = CrimeAdapter(context, crimes)
+                    rvCrimeList.adapter = crimeAdapter
+                } }
+            })
     }
 }
