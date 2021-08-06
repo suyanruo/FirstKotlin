@@ -6,17 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintent.R
 import com.example.criminalintent.formatDate
 import com.example.criminalintent.model.Crime
+import java.util.*
 
 /**
  * Created on 2021/8/4.
  *
  */
 class CrimeAdapter(private val context: Context?, var crimeList: List<Crime>) : RecyclerView.Adapter<CrimeAdapter.CrimeViewHolder>() {
+    private var onItemSelectedListener: OnItemSelectedListener? = null
+
+    fun setOnItemSelectedListener(listener: OnItemSelectedListener) {
+        onItemSelectedListener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_crime_list, parent, false)
@@ -40,7 +45,9 @@ class CrimeAdapter(private val context: Context?, var crimeList: List<Crime>) : 
 
         init {
             itemView.setOnClickListener {
-                Toast.makeText(context, "${crime.title} is clicked", Toast.LENGTH_SHORT).show()
+                if (onItemSelectedListener != null) {
+                    onItemSelectedListener?.onItemClicked(crime.id)
+                }
             }
         }
 
@@ -50,5 +57,9 @@ class CrimeAdapter(private val context: Context?, var crimeList: List<Crime>) : 
             tvCrimeDate.text = formatDate(crime.date)
             ivCrimeSolved.visibility = if (crime.isSolved) View.VISIBLE else View.GONE
         }
+    }
+
+    interface OnItemSelectedListener {
+        fun onItemClicked(uuid: UUID)
     }
 }

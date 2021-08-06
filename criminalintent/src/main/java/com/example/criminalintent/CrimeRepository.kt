@@ -7,6 +7,7 @@ import com.example.criminalintent.database.CrimeDatabase
 import com.example.criminalintent.model.Crime
 import java.lang.IllegalStateException
 import java.util.*
+import java.util.concurrent.Executors
 
 /**
  * Created on 2021/8/5.
@@ -18,6 +19,7 @@ class CrimeRepository private constructor(context: Context) {
     private val database = Room.databaseBuilder(
         context.applicationContext, CrimeDatabase::class.java, DATABASE_NAME).build()
     private val dao = database.crimeDao()
+    private val executor = Executors.newSingleThreadExecutor()
 
     companion object {
         private var INSTANCE: CrimeRepository? = null
@@ -36,4 +38,16 @@ class CrimeRepository private constructor(context: Context) {
     fun getCrimes(): LiveData<List<Crime>> = dao.getCrimes()
 
     fun getCrime(uuid: UUID): LiveData<Crime?> = dao.getCrime(uuid)
+
+    fun updateCrime(crime: Crime) {
+        executor.execute {
+            dao.updateCrime(crime)
+        }
+    }
+
+    fun insertCrime(crime: Crime) {
+        executor.execute {
+            dao.insertCrime(crime)
+        }
+    }
 }

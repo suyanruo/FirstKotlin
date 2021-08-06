@@ -8,9 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintent.R
 import com.example.criminalintent.formatDate
 import com.example.criminalintent.model.Crime
+import com.example.criminalintent.viewModel.CrimeDetailsViewModel
+import java.util.*
+
+private const val CRIME_UUID = "crime_uuid"
 
 class CrimeFragment : Fragment() {
     private lateinit var etTitle: EditText
@@ -19,8 +25,24 @@ class CrimeFragment : Fragment() {
 
     private lateinit var crime: Crime
 
+    private val crimeDetailsViewModel: CrimeDetailsViewModel by lazy {
+        ViewModelProvider(this).get(CrimeDetailsViewModel::class.java)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(uuid: UUID) =
+            CrimeFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(CRIME_UUID, uuid)
+                }
+            }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val uuid = arguments?.getSerializable(CRIME_UUID) as UUID
+        crimeDetailsViewModel.loadCrime(uuid)
         crime = Crime()
     }
 
@@ -40,6 +62,18 @@ class CrimeFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        crimeDetailsViewModel.crimeLiveData.observe(viewLifecycleOwner, Observer { crime ->
+            crime?.let {
+                this.crime = crime
+                etTitle.setText(crime.title)
+                btnDate.text = formatDate(crime.date)
+                cbSolved.isChecked = crime.isSolved
+            }
+        })
+    }
+
     override fun onStart() {
         super.onStart()
         // 因为设备配置放生变化时会重新执行声明周期函数，而数据存储在viewmodel中，如果在onCreateView中设置监听器，视图恢复后在数据重置时会触发监听器
@@ -57,18 +91,17 @@ class CrimeFragment : Fragment() {
         etTitle.addTextChangedListener(textWatcher)
 
         cbSolved.apply {
-            setOnCheckedChangeListener { _, isChecked -> crime.isSolved = isChecked }
+            setOnCheckedChangeListener { _, isChecked ->
+                crime.isSolved = isChecked
+                // 跳过勾选动画
+                jumpDrawablesToCurrentState()
+            }
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CrimeFragment().apply {
-                arguments = Bundle().apply {
-                    putString("ARG_PARAM1", param1)
-                    putString("ARG_PARAM2", param2)
-                }
-            }
+    override fun onStop() {
+        super.onStop()
+        // 保存修改后的数据
+        crimeDetailsViewModel.saveCrime(crime)
     }
 }
