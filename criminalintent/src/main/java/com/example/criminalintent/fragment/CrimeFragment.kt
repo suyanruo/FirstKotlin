@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.criminalintent.R
@@ -17,6 +18,7 @@ import com.example.criminalintent.viewModel.CrimeDetailsViewModel
 import java.util.*
 
 private const val CRIME_UUID = "crime_uuid"
+private const val DIALOG_DATE = "DialogDate"
 
 class CrimeFragment : Fragment() {
     private lateinit var etTitle: EditText
@@ -44,6 +46,14 @@ class CrimeFragment : Fragment() {
         val uuid = arguments?.getSerializable(CRIME_UUID) as UUID
         crimeDetailsViewModel.loadCrime(uuid)
         crime = Crime()
+
+        // 设置跳转到的日期选择fragment的返回监听器
+        setFragmentResultListener(REQUEST_KEY_DATE) { requestKey, bundle ->
+            if (REQUEST_KEY_DATE == requestKey) {
+                crime.date = bundle.getSerializable(BUNDLE_KEY_DATE) as Date
+                updateUI()
+            }
+        }
     }
 
     override fun onCreateView(
@@ -57,7 +67,11 @@ class CrimeFragment : Fragment() {
 
         btnDate.apply {
             text = formatDate(crime.date)
-            isEnabled = false
+        }
+        btnDate.setOnClickListener {
+            DatePickerFragment.newInstance(crime.date).apply {
+                show(this@CrimeFragment.parentFragmentManager, DIALOG_DATE)
+            }
         }
         return view
     }
@@ -67,9 +81,7 @@ class CrimeFragment : Fragment() {
         crimeDetailsViewModel.crimeLiveData.observe(viewLifecycleOwner, Observer { crime ->
             crime?.let {
                 this.crime = crime
-                etTitle.setText(crime.title)
-                btnDate.text = formatDate(crime.date)
-                cbSolved.isChecked = crime.isSolved
+                updateUI()
             }
         })
     }
@@ -103,5 +115,11 @@ class CrimeFragment : Fragment() {
         super.onStop()
         // 保存修改后的数据
         crimeDetailsViewModel.saveCrime(crime)
+    }
+
+    private fun updateUI() {
+        etTitle.setText(crime.title)
+        btnDate.text = formatDate(crime.date)
+        cbSolved.isChecked = crime.isSolved
     }
 }
