@@ -2,7 +2,6 @@ package com.example.criminalintent.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintent.R
 import com.example.criminalintent.adapter.CrimeAdapter
+import com.example.criminalintent.adapter.CrimeListAdapter
 import com.example.criminalintent.viewModel.CrimeListViewModel
 import java.util.*
 
@@ -23,6 +23,7 @@ import java.util.*
 class CrimeListFragment : Fragment() {
     private lateinit var rvCrimeList: RecyclerView
     private var crimeAdapter: CrimeAdapter? = null
+//    private var crimeListAdapter: CrimeListAdapter? = null
     private var callback: CrimeListCallback? = null
 
     private val crimeListViewModel: CrimeListViewModel by lazy {
@@ -49,6 +50,17 @@ class CrimeListFragment : Fragment() {
         rvCrimeList = view.findViewById(R.id.rv_crime_list)
         rvCrimeList.layoutManager = LinearLayoutManager(context)
 
+        // 使用ListAdapter
+//        crimeListAdapter = CrimeListAdapter()
+//        crimeListAdapter?.setOnItemSelectedListener(object : CrimeListAdapter.OnItemSelectedListener {
+//            override fun onItemClicked(uuid: UUID) {
+//                if (callback != null) {
+//                    callback?.onCrimeSelected(uuid)
+//                }
+//            }
+//        })
+//        rvCrimeList.adapter = crimeListAdapter
+
         return view
     }
 
@@ -58,6 +70,7 @@ class CrimeListFragment : Fragment() {
             viewLifecycleOwner,
             Observer { crimes ->
                 crimes?.let {
+                    // 使用RecyclerView.Adapter
                     crimeAdapter = CrimeAdapter(context, crimes)
                     crimeAdapter?.setOnItemSelectedListener(object : CrimeAdapter.OnItemSelectedListener {
                         override fun onItemClicked(uuid: UUID) {
@@ -68,6 +81,9 @@ class CrimeListFragment : Fragment() {
 
                     })
                     rvCrimeList.adapter = crimeAdapter
+
+                    // 使用ListAdapter
+//                    crimeListAdapter?.submitList(it)
                 }
             })
     }
