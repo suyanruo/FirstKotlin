@@ -9,7 +9,7 @@ import com.example.criminalintent.model.Crime
  * Created on 2021/8/5.
  *
  */
-@Database(entities = [Crime::class], version = 1)
+@Database(entities = [Crime::class], version = 2)
 @TypeConverters(CrimeTypeConverters::class)
 abstract class CrimeDatabase : RoomDatabase() {
     abstract fun crimeDao(): CrimeDao

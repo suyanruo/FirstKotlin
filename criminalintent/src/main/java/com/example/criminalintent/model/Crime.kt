@@ -3,6 +3,8 @@ package com.example.criminalintent.model
 import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import java.util.*
 
 /**
@@ -13,7 +15,8 @@ import java.util.*
 data class Crime(@PrimaryKey val id: UUID = UUID.randomUUID(),
                  var title: String = "",
                  var date: Date = Date(),
-                 var isSolved: Boolean = false
+                 var isSolved: Boolean = false,
+                 var suspect: String = ""
 )
 
 object CrimeItemDiff : DiffUtil.ItemCallback<Crime>() {
@@ -36,4 +39,10 @@ object CrimeItemDiff : DiffUtil.ItemCallback<Crime>() {
         }
     }
 
+}
+
+val migration1_2 = object : Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE crime ADD COLUMN suspect TEXT NOT NULL DEFAULT ''")
+    }
 }
