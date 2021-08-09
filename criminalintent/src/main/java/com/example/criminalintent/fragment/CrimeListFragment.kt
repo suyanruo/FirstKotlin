@@ -2,9 +2,7 @@ package com.example.criminalintent.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.criminalintent.R
 import com.example.criminalintent.adapter.CrimeAdapter
 import com.example.criminalintent.adapter.CrimeListAdapter
+import com.example.criminalintent.model.Crime
 import com.example.criminalintent.viewModel.CrimeListViewModel
 import java.util.*
 
@@ -39,6 +38,12 @@ class CrimeListFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callback = context as CrimeListCallback
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Activity通过FragmentManager通知Fragment处理onCreateOptionsMenu方法
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -86,6 +91,23 @@ class CrimeListFragment : Fragment() {
 //                    crimeListAdapter?.submitList(it)
                 }
             })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_crime_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.new_crime -> {
+                val crimeTemp = Crime()
+                crimeListViewModel.addCrime(crimeTemp)
+                callback?.onCrimeSelected(crimeTemp.id)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onDetach() {
