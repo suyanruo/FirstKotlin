@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.example.criminalintent.database.CrimeDatabase
 import com.example.criminalintent.model.Crime
 import com.example.criminalintent.model.migration1_2
+import java.io.File
 import java.lang.IllegalStateException
 import java.util.*
 import java.util.concurrent.Executors
@@ -23,6 +24,7 @@ class CrimeRepository private constructor(context: Context) {
         .build()
     private val dao = database.crimeDao()
     private val executor = Executors.newSingleThreadExecutor()
+    private val fileDir = context.applicationContext.filesDir
 
     companion object {
         private var INSTANCE: CrimeRepository? = null
@@ -53,4 +55,6 @@ class CrimeRepository private constructor(context: Context) {
             dao.insertCrime(crime)
         }
     }
+
+    fun getPhotoFile(crime: Crime): File = File(fileDir, crime.photoFileName)
 }

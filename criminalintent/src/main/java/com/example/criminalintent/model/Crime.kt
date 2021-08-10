@@ -17,7 +17,10 @@ data class Crime(@PrimaryKey val id: UUID = UUID.randomUUID(),
                  var date: Date = Date(),
                  var isSolved: Boolean = false,
                  var suspect: String = ""
-)
+) {
+    val photoFileName
+        get() = "IMG_$id.jpg"
+}
 
 object CrimeItemDiff : DiffUtil.ItemCallback<Crime>() {
     override fun areItemsTheSame(oldItem: Crime, newItem: Crime): Boolean {

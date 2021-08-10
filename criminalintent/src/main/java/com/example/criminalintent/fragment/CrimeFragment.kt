@@ -2,8 +2,11 @@ package com.example.criminalintent.fragment
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
@@ -12,7 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.result.launch
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +24,9 @@ import com.example.criminalintent.ContactResultContract
 import com.example.criminalintent.R
 import com.example.criminalintent.formatDate
 import com.example.criminalintent.model.Crime
+import com.example.criminalintent.util.getScaledBitmap
 import com.example.criminalintent.viewModel.CrimeDetailsViewModel
+import java.io.File
 import java.util.*
 
 private const val CRIME_UUID = "crime_uuid"
@@ -33,8 +39,12 @@ class CrimeFragment : Fragment() {
     private lateinit var cbSolved: CheckBox
     private lateinit var btnSuspect: Button
     private lateinit var btnSendReport: Button
+    private lateinit var ivPicture: ImageView
+    private lateinit var ibCapture: ImageButton
 
     private lateinit var crime: Crime
+    private lateinit var photoFile: File
+    private lateinit var photoUri: Uri
 
     private val crimeDetailsViewModel: CrimeDetailsViewModel by lazy {
         ViewModelProvider(this).get(CrimeDetailsViewModel::class.java)
@@ -75,6 +85,8 @@ class CrimeFragment : Fragment() {
         cbSolved = view.findViewById(R.id.cb_solved)
         btnSuspect = view.findViewById(R.id.btn_suspect)
         btnSendReport = view.findViewById(R.id.btn_send_report)
+        ivPicture = view.findViewById(R.id.iv_crime_picture)
+        ibCapture = view.findViewById(R.id.ib_capture_picture)
 
         btnDate.apply {
             text = formatDate(crime.date)
@@ -121,7 +133,35 @@ class CrimeFragment : Fragment() {
                 isEnabled = false
             }
         }
+        initPhotoView()
         return view
+    }
+
+    private fun initPhotoView() {
+        val captureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { ok ->
+            if (ok) {
+                requireActivity().revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                updatePhoto()
+            }
+        }
+        ibCapture.apply {
+            val packageManager = requireActivity().packageManager
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val resolveInfo = intent.resolveActivityInfo(packageManager, PackageManager.MATCH_DEFAULT_ONLY)
+            if (resolveInfo == null) isEnabled = false
+
+            setOnClickListener {
+                val cameraActivities: List<ResolveInfo> =
+                    packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                for (cameraActivity in cameraActivities) {
+                    requireActivity().grantUriPermission(
+                        cameraActivity.activityInfo.packageName,
+                        photoUri,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                }
+                captureLauncher.launch(photoUri)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -129,6 +169,8 @@ class CrimeFragment : Fragment() {
         crimeDetailsViewModel.crimeLiveData.observe(viewLifecycleOwner, Observer { crime ->
             crime?.let {
                 this.crime = crime
+                photoFile = crimeDetailsViewModel.getPhotoFile(crime)
+                photoUri = FileProvider.getUriForFile(requireActivity(), requireActivity().packageName + ".provider", photoFile)
                 updateUI()
             }
         })
@@ -165,12 +207,28 @@ class CrimeFragment : Fragment() {
         crimeDetailsViewModel.saveCrime(crime)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        // 撤销URI权限
+        requireActivity().revokeUriPermission(photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+    }
+
     private fun updateUI() {
         etTitle.setText(crime.title)
         btnDate.text = formatDate(crime.date)
         cbSolved.isChecked = crime.isSolved
         if (crime.suspect.isNotEmpty()) {
             btnSuspect.text = crime.suspect
+        }
+        updatePhoto()
+    }
+
+    private fun updatePhoto() {
+        if (photoFile.exists()) {
+            val bitmap = getScaledBitmap(photoFile.path, requireActivity())
+            ivPicture.setImageBitmap(bitmap)
+        } else {
+            ivPicture.setImageBitmap(null)
         }
     }
 
