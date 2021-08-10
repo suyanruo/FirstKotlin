@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.ContactsContract
 import androidx.activity.result.contract.ActivityResultContract
 
 /**
@@ -12,9 +11,9 @@ import androidx.activity.result.contract.ActivityResultContract
  * 访问联系人应用
  * ref: https://segmentfault.com/a/1190000037601888
  */
-class ContactResultContract : ActivityResultContract<Unit, Uri?>() {
-    override fun createIntent(context: Context, input: Unit?): Intent {
-        return Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)
+class ContactResultContract : ActivityResultContract<Intent, Uri?>() {
+    override fun createIntent(context: Context, input: Intent): Intent {
+        return input
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {

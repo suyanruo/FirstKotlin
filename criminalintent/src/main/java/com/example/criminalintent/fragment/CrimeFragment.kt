@@ -111,12 +111,12 @@ class CrimeFragment : Fragment() {
                     }
                 }
             }
+            val contactIntent = Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)
             setOnClickListener{
-                launcher.launch()
+                launcher.launch(contactIntent)
             }
             // 检查是否存在可打开的应用
-            val intent = Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)
-            val activity = requireActivity().packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            val activity = requireActivity().packageManager.resolveActivity(contactIntent, PackageManager.MATCH_DEFAULT_ONLY)
             if (activity == null) {
                 isEnabled = false
             }
