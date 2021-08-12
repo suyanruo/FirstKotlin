@@ -46,6 +46,15 @@
             android:text="@string/live_data"/>
 
         <Button
+            android:id="@+id/btn_app_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_roll"
+            android:layout_toRightOf="@id/btn_storage"
+            android:textAllCaps="false"
+            android:text="AppList" />
+
+        <Button
             android:id="@+id/btn_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

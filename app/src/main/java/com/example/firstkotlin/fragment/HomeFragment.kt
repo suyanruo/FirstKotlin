@@ -64,7 +64,10 @@ class HomeFragment: BaseFragment() {
             startActivity(Intent(activity, LiveDataActivity::class.java))
         }
         btnStorage.setOnClickListener {
-            startActivity(activity!!.intentFor<StorageActivity>())
+            startActivity(requireActivity().intentFor<StorageActivity>())
+        }
+        view.findViewById<Button>(R.id.btn_app_list).setOnClickListener {
+            startActivity(Intent(requireActivity(), AppListActivity::class.java))
         }
     }
 

@@ -15,8 +15,8 @@ class DataBindActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityDataBindBinding = DataBindingUtil.setContentView(
-            this, R.layout.activity_data_bind)
+        val binding: ActivityDataBindBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_data_bind)
         binding.user = User("Z", "Jay")
         val observableUser = ObservableUser()
         observableUser.firstName = "suyanruo"
