@@ -67,7 +67,7 @@ class HomeFragment: BaseFragment() {
             startActivity(requireActivity().intentFor<StorageActivity>())
         }
         view.findViewById<Button>(R.id.btn_app_list).setOnClickListener {
-            startActivity(Intent(requireActivity(), AppListActivity::class.java))
+            startActivity(Intent(requireActivity(), NerdActivity::class.java))
         }
     }
 
