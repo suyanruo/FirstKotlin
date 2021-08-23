@@ -8,9 +8,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstkotlin.R
+import com.example.firstkotlin.databinding.ItemRecyclerGridBinding
 import com.example.firstkotlin.model.LifeItem
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_recycler_grid.*
 
 /**
  * Created on 2020/6/1.
@@ -18,12 +17,14 @@ import kotlinx.android.synthetic.main.item_recycler_grid.*
  */
 class RecyclerStaggeredAdapter(context: Context, private val infos: MutableList<LifeItem>):
     RecyclerBaseAdapter<RecyclerView.ViewHolder>(context) {
+    private lateinit var binding: ItemRecyclerGridBinding
 
     override fun getItemCount(): Int = infos.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = inflater.inflate(R.layout.item_recycler_grid, parent, false)
-        return ItemHolderCon(view)
+//        val view = inflater.inflate(R.layout.item_recycler_grid, parent, false)
+        binding = ItemRecyclerGridBinding.inflate(inflater, parent, false)
+        return ItemHolderCon2(binding.root)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -34,8 +35,11 @@ class RecyclerStaggeredAdapter(context: Context, private val infos: MutableList<
 //        vh.iv_pic.setImageResource(info.picId)
 //        vh.tv_title.text = info.title
 
-        // 方式二：使用插件LayoutContainer
-        (holder as ItemHolderCon).bind(info)
+        // 方式二：使用插件LayoutContainer，已废弃
+//        (holder as ItemHolderCon).bind(info)
+
+        // 方式三：视图绑定
+        (holder as ItemHolderCon2).bind(info)
     }
 
     inner class ItemHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -44,11 +48,19 @@ class RecyclerStaggeredAdapter(context: Context, private val infos: MutableList<
         var tv_title = view.findViewById<TextView>(R.id.tv_title)
     }
 
-    class ItemHolderCon(override val containerView: View):
-        RecyclerView.ViewHolder(containerView), LayoutContainer {
+//    class ItemHolderCon(override val containerView: View):
+//        RecyclerView.ViewHolder(containerView), LayoutContainer {
+//        fun bind(item: LifeItem) {
+//            iv_pic.setImageResource(item.picId)
+//            tv_title.text = item.title
+//        }
+//    }
+
+    inner class ItemHolderCon2(containerView: View):
+        RecyclerView.ViewHolder(containerView) {
         fun bind(item: LifeItem) {
-            iv_pic.setImageResource(item.picId)
-            tv_title.text = item.title
+            binding.ivPic.setImageResource(item.picId)
+            binding.tvTitle.text = item.title
         }
     }
  }

@@ -16,12 +16,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.firstkotlin.R
 import com.example.firstkotlin.adapter.RecyclerCommonAdapter
+import com.example.firstkotlin.databinding.ActivityMaterialViewBinding
 import com.example.firstkotlin.model.LifeItem
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.android.synthetic.main.activity_material_view.*
-import kotlinx.android.synthetic.main.life_pay.*
-import kotlinx.android.synthetic.main.toolbar_collapse.*
-import kotlinx.android.synthetic.main.toolbar_expand.*
 import org.jetbrains.anko.*
 import kotlin.math.abs
 
@@ -31,13 +28,16 @@ import kotlin.math.abs
  */
 class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedListener {
     private var mMaskColor: Int = 0
+    private lateinit var binding: ActivityMaterialViewBinding
     private lateinit var popupWindow: PopupWindow
     private lateinit var progressDialog: ProgressDialog
     private var prog: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_material_view)
+//        setContentView(R.layout.activity_material_view)
+        binding = ActivityMaterialViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initViews()
     }
@@ -52,42 +52,46 @@ class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         //第一种方式：使用采取了LayoutContainer的适配器
         //rv_content.adapter = RecyclerLifeAdapter(this, LifeItem.default)
         //第二种方式：使用把三类可变要素抽象出来的适配器
-        rv_content.layoutManager = GridLayoutManager(this, 4)
-        val adapter = RecyclerCommonAdapter(
-            this,
-            R.layout.item_recycler_grid, LifeItem.default
-        ) { view, item ->
-            val iv_pic = view.findViewById<ImageView>(R.id.iv_pic)
-            val tv_title = view.findViewById<TextView>(R.id.tv_title)
-            iv_pic.setImageResource(item.picId)
-            tv_title.text = item.title
+        binding.rvContent.apply {
+            layoutManager = GridLayoutManager(this@MaterialViewActivity, 4)
+            val adapter = RecyclerCommonAdapter(
+                this@MaterialViewActivity,
+                R.layout.item_recycler_grid, LifeItem.default
+            ) { view, item ->
+                val iv_pic = view.findViewById<ImageView>(R.id.iv_pic)
+                val tv_title = view.findViewById<TextView>(R.id.tv_title)
+                iv_pic.setImageResource(item.picId)
+                tv_title.text = item.title
+            }
+            this.adapter = adapter
+            itemAnimator = DefaultItemAnimator()
         }
-        rv_content.adapter = adapter
-        rv_content.itemAnimator = DefaultItemAnimator()
     }
 
     private fun initToolBar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         mMaskColor = ContextCompat.getColor(this, R.color.blue_black)
         //给控件abl_bar注册一个位置偏移的监听器
-        app_bar.addOnOffsetChangedListener(this)
+        binding.appBar.addOnOffsetChangedListener(this)
 
-        iv_plus_ex.setOnClickListener{
+        val ivPlusEx = binding.tlExpand.ivPlusEx
+        ivPlusEx.setOnClickListener{
             popupWindow.contentView.measure(0, 0)
-            popupWindow.showAsDropDown(iv_plus_ex,
+            popupWindow.showAsDropDown(ivPlusEx,
                 (-(popupWindow.contentView.measuredWidth) * 1.5).toInt(),
-                iv_plus_ex.height)
+                ivPlusEx.height)
             val lp: WindowManager.LayoutParams = window.attributes
             lp.alpha = 0.7f
             window.attributes = lp
         }
 
-        iv_plus_co.setOnClickListener{
+        val ivPlusCo = binding.tlCollapse.ivPlusCo
+        ivPlusCo.setOnClickListener{
             popupWindow.contentView.measure(0, 0)
-            popupWindow.showAsDropDown(iv_plus_co,
+            popupWindow.showAsDropDown(ivPlusCo,
                 (-(popupWindow.contentView.measuredWidth) * 1.5).toInt(),
-                iv_plus_co.height)
+                ivPlusCo.height)
             val lp: WindowManager.LayoutParams = window.attributes
             lp.alpha = 0.7f
             window.attributes = lp
@@ -170,15 +174,15 @@ class MaterialViewActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         val maskColorOut = Color.argb(alphaOut * 3, Color.red(mMaskColor),
             Color.green(mMaskColor), Color.blue(mMaskColor))
         if (offset <= total.times(0.45)) { //偏移量小于一半，则显示展开时候的工具栏
-            tl_expand.visibility = View.VISIBLE
-            tl_collapse.visibility = View.GONE
-            v_expand_mask.setBackgroundColor(maskColorInDouble)
+            binding.tlExpand.root.visibility = View.VISIBLE
+            binding.tlCollapse.root.visibility = View.GONE
+            binding.tlExpand.vExpandMask.setBackgroundColor(maskColorInDouble)
         } else { //偏移量大于一半，则显示缩小时候的工具栏
-            tl_expand.visibility = View.GONE
-            tl_collapse.visibility = View.VISIBLE
-            v_collapse_mask.setBackgroundColor(maskColorOut)
+            binding.tlExpand.root.visibility = View.GONE
+            binding.tlCollapse.root.visibility = View.VISIBLE
+            binding.tlCollapse.vCollapseMask.setBackgroundColor(maskColorOut)
         }
-        v_pay_mask.setBackgroundColor(maskColorIn)
+        binding.lLifePay.vPayMask.setBackgroundColor(maskColorIn)
     }
 
 //    private fun showOrHideFloatingButton() {

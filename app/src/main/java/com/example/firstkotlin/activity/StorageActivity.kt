@@ -2,25 +2,25 @@ package com.example.firstkotlin.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.firstkotlin.R
+import com.example.firstkotlin.databinding.ActivityStorageBinding
 import com.example.firstkotlin.util.FileUtil
-import kotlinx.android.synthetic.main.activity_storage.*
 import java.io.File
 
 class StorageActivity : AppCompatActivity() {
     lateinit var fileDir: File
+    private lateinit var binding: ActivityStorageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_storage)
+        binding = ActivityStorageBinding.inflate(layoutInflater)
 
         val path = getExternalFilesDir(null).toString() + File.separator + "storage"
         fileDir = File(path)
 
-        btn_write_text.setOnClickListener {
+        binding.btnWriteText.setOnClickListener {
             writeText()
         }
-        btn_read_text.setOnClickListener {
+        binding.btnReadText.setOnClickListener {
             readText()
         }
     }
@@ -43,7 +43,7 @@ class StorageActivity : AppCompatActivity() {
         if (file == null || !file.exists()) {
             return
         }
-        tv_content.text = file.readText()
+        binding.tvContent.text = file.readText()
     }
 
     override fun onPause() {

@@ -9,7 +9,6 @@ import android.widget.ImageView
 import com.example.firstkotlin.R
 import com.example.firstkotlin.databinding.ActivityRollBinding
 import com.example.firstkotlin.receiver.TimeReceiver
-import kotlinx.android.synthetic.main.activity_roll.*
 import java.util.*
 
 class RollActivity : AppCompatActivity() {
@@ -30,8 +29,9 @@ class RollActivity : AppCompatActivity() {
             rollNumber()
         }
 
-        // 通过"import kotlinx.android.synthetic.main.布局文件名称.*"导入布局文件同样可以实现布局文件中控件的使用
-        btn_roll.text = "helloWorld"
+        // 通过"import kotlinx.android.synthetic.main.布局文件名称.*"导入布局文件同样可以实现布局文件中控件的使用。
+        // 此种方法需要使用"kotlin-android-extensions"插件（已废弃），目前使用下面方式使用定义的控件
+        binding.btnRoll.text = "helloWorld"
     }
 
     private fun rollNumber() {

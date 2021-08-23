@@ -12,7 +12,6 @@ import com.example.firstkotlin.databinding.ActivityMainBinding
 import com.example.firstkotlin.fragment.HomeFragment
 import com.example.firstkotlin.fragment.MallFragment
 import com.example.firstkotlin.fragment.PersonFragment
-import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * @author zhangjian
@@ -41,36 +40,41 @@ class MainActivity : AppCompatActivity() {
 
         initFragment()
 
-        val fragmentAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+        val fragmentAdapter = object : FragmentPagerAdapter(supportFragmentManager,
+            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment = fragmentList.get(position)
 
             override fun getCount(): Int = fragmentList.size()
         }
-        vp_main.scrollable = false
-        vp_main.adapter = fragmentAdapter
-        vp_main.currentItem = 0
-        vp_main.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
+        binding.vpMain.apply {
+            scrollable = false
+            adapter = fragmentAdapter
+            currentItem = 0
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {}
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {}
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {}
 
-            override fun onPageSelected(position: Int) {
-                vp_main.currentItem = position
-                bnv_main.menu.getItem(position).isChecked = true
-            }
+                override fun onPageSelected(position: Int) {
+                    binding.vpMain.currentItem = position
+                    binding.bnvMain.menu.getItem(position).isChecked = true
+                }
 
-        })
-        // 去除背景底色
-        bnv_main.itemIconTintList = null
-        bnv_main.setOnNavigationItemSelectedListener {
-            item -> switchMenu(item)
-            true
+            })
         }
 
+        // 去除背景底色
+        binding.bnvMain.apply {
+            itemIconTintList = null
+            setOnNavigationItemSelectedListener {
+                    item -> switchMenu(item)
+                true
+            }
+        }
 
     }
 
@@ -97,9 +101,9 @@ class MainActivity : AppCompatActivity() {
      */
     private fun switchMenu(item: MenuItem) {
         when (item.itemId) {
-            R.id.navigation_home -> vp_main.currentItem = 0
-            R.id.navigation_mall -> vp_main.currentItem = 1
-            else -> vp_main.currentItem = 2
+            R.id.navigation_home -> binding.vpMain.currentItem = 0
+            R.id.navigation_mall -> binding.vpMain.currentItem = 1
+            else -> binding.vpMain.currentItem = 2
         }
     }
 }
